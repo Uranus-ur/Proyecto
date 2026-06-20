@@ -32,33 +32,32 @@
         </div>
     </div>
 
-    <script>
-        // INICIALIZACIÓN ÚNICA
-        const supabase = supabase.createClient('https://dhorfbnoinvjinrkhjrr.supabase.co', 'sb_publishable_cqQaWlVooUBALjkQ3E3kmw_WNrZ_GDc');
+<script>
+    // 1. Inicializa la conexión solo una vez
+    const SUPABASE_URL = 'TU_URL_AQUI';
+    const SUPABASE_KEY = 'TU_KEY_AQUI';
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        document.getElementById('btnRegistrar').addEventListener('click', async () => {
-            const nombre = document.getElementById('nombre').value;
-            const placa = document.getElementById('placa').value.toUpperCase();
-            const whatsapp = document.getElementById('whatsapp').value;
+    // 2. Escucha el clic del botón
+    document.getElementById('btnRegistrar').addEventListener('click', async () => {
+        const nombre = document.getElementById('nombre').value;
+        const placa = document.getElementById('placa').value;
+        const whatsapp = document.getElementById('whatsapp').value;
 
-            if(!nombre || !placa || !whatsapp) {
-                alert("Completa todos los campos");
-                return;
-            }
+        try {
+            const { error } = await supabase
+                .from('clientes')
+                .insert([{ nombre, placa, whatsapp }]);
 
-            const { error } = await supabase.from('clientes').insert([{
-                nombre: nombre,
-                placa: placa,
-                whatsapp: whatsapp
-            }]);
-
-            if (error) {
-                alert("Error: " + error.message);
-            } else {
-                alert("¡Registrado con éxito!");
-                location.reload();
-            }
-        });
-    </script>
+            if (error) throw error;
+            
+            alert('¡Registro exitoso!');
+            // Opcional: limpiar inputs
+        } catch (err) {
+            console.error('Error al insertar:', err);
+            alert('Hubo un error al guardar los datos.');
+        }
+    });
+</script>
 </body>
 </html>
