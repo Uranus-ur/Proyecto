@@ -32,36 +32,36 @@
         </div>
     </div>
 
-    <script>
-        // Configura tus credenciales aquí
-        const supabase = supabase.createClient('https://dhorfbnoinvjinrkhjrr.supabase.co', 'sb_publishable_cqQaWlVooUBALjkQ3E3kmw_WNrZ_GDc');
+  <script>
+    // 1. Inicialización segura
+    const supabaseUrl = 'TU_URL_AQUI';
+    const supabaseKey = 'TU_KEY_AQUI';
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        document.getElementById('btnRegistrar').addEventListener('click', async () => {
+    document.getElementById('btnRegistrar').addEventListener('click', async () => {
+        try {
             const nombre = document.getElementById('nombre').value;
             const placa = document.getElementById('placa').value.toUpperCase();
             const whatsapp = document.getElementById('whatsapp').value;
 
-            if(!nombre || !placa || !whatsapp) {
-                alert("Por favor completa todos los campos.");
-                return;
-            }
+            console.log("Intentando enviar:", { nombre, placa, whatsapp });
 
-            const { error } = await supabase.from('clientes').insert([{
+            const { data, error } = await supabase.from('clientes').insert([{
                 nombre: nombre,
                 placa: placa,
                 whatsapp: whatsapp
             }]);
 
-            if (error) {
-                alert("Error al registrar: " + error.message);
-            } else {
-                alert("¡Registro exitoso! Ya puedes pasar al taller.");
-                // Limpiar formulario
-                document.getElementById('nombre').value = '';
-                document.getElementById('placa').value = '';
-                document.getElementById('whatsapp').value = '';
-            }
-        });
-    </script>
+            if (error) throw error;
+
+            alert("¡Registro exitoso!");
+            location.reload();
+
+        } catch (err) {
+            console.error("Error completo:", err);
+            alert("Error al registrar: " + err.message);
+        }
+    });
+</script>
 </body>
 </html>
