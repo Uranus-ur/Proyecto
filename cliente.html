@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Taller | Cliente</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { 
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('dt_roja.jpg'); 
+            background-size: cover; 
+            background-position: center; 
+            min-height: 100vh; 
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-6">
+
+    <div class="bg-black/70 backdrop-blur-lg p-8 rounded-3xl w-full max-w-md border border-gray-700 shadow-2xl">
+        <h2 class="text-3xl font-black text-white mb-2 uppercase italic text-center">Registro</h2>
+        <p class="text-gray-400 text-center mb-8">Ingresa tus datos para registrar tu vehículo.</p>
+        
+        <div class="space-y-4">
+            <input type="text" id="nombre" placeholder="Nombre completo" class="w-full p-4 bg-gray-900 border border-gray-600 rounded-xl text-white outline-none focus:border-red-600 transition">
+            <input type="text" id="placa" placeholder="PLACA (Ej: GGY11F)" class="w-full p-4 bg-gray-900 border border-gray-600 rounded-xl text-white outline-none focus:border-red-600 transition uppercase">
+            <input type="tel" id="whatsapp" placeholder="WhatsApp (Ej: 3001234567)" class="w-full p-4 bg-gray-900 border border-gray-600 rounded-xl text-white outline-none focus:border-red-600 transition">
+            
+            <button id="btnRegistrar" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold p-4 rounded-xl transition duration-300 transform hover:scale-[1.02]">
+                REGISTRAR INGRESO
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Configura tus credenciales aquí
+        const supabase = supabase.createClient('https://dhorfbnoinvjinrkhjrr.supabase.co', 'sb_publishable_cqQaWlVooUBALjkQ3E3kmw_WNrZ_GDc');
+
+        document.getElementById('btnRegistrar').addEventListener('click', async () => {
+            const nombre = document.getElementById('nombre').value;
+            const placa = document.getElementById('placa').value.toUpperCase();
+            const whatsapp = document.getElementById('whatsapp').value;
+
+            if(!nombre || !placa || !whatsapp) {
+                alert("Por favor completa todos los campos.");
+                return;
+            }
+
+            const { error } = await supabase.from('clientes').insert([{
+                nombre: nombre,
+                placa: placa,
+                whatsapp: whatsapp
+            }]);
+
+            if (error) {
+                alert("Error al registrar: " + error.message);
+            } else {
+                alert("¡Registro exitoso! Ya puedes pasar al taller.");
+                // Limpiar formulario
+                document.getElementById('nombre').value = '';
+                document.getElementById('placa').value = '';
+                document.getElementById('whatsapp').value = '';
+            }
+        });
+    </script>
+</body>
+</html>

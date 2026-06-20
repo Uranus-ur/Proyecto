@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Administrativo | Taller Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-gray-900 text-white p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8 text-red-500">Panel de Control - Taller</h1>
+        
+        <div id="listaClientes" class="grid gap-4">
+            <p class="text-gray-400">Cargando registros...</p>
+        </div>
+    </div>
+
+    <script>
+        // REEMPLAZA CON TUS CREDENCIALES
+        const supabase = supabase.createClient('https://dhorfbnoinvjinrkhjrr.supabase.co', 'sb_publishable_cqQaWlVooUBALjkQ3E3kmw_WNrZ_GDc');
+
+        async function cargarRegistros() {
+            // Traemos los datos de la tabla clientes
+            const { data, error } = await supabase
+                .from('clientes')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error("Error al cargar:", error);
+                return;
+            }
+
+            const contenedor = document.getElementById('listaClientes');
+            contenedor.innerHTML = data.map(c => `
+                <div class="bg-gray-800 p-6 rounded-2xl flex justify-between items-center border border-gray-700">
+                    <div>
+                        <h3 class="text-xl font-bold">${c.placa}</h3>
+                        <p class="text-gray-400">Cliente: ${c.nombre}</p>
+                        <p class="text-sm text-blue-400">WhatsApp: ${c.whatsapp}</p>
+                    </div>
+                    <div class="space-x-2">
+                        <button onclick="iniciarAtencion('${c.placa}')" class="bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded-lg font-bold">
+                            Iniciar Atención
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function iniciarAtencion(placa) {
+            alert("Iniciando atención para la placa: " + placa);
+            // Aquí agregaremos la lógica para enviar el SMS más adelante
+        }
+
+        // Ejecutar carga al abrir la página
+        cargarRegistros();
+    </script>
+</body>
+</html>
